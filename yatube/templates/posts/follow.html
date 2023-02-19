@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Посты любимых авторов
+{% endblock title %}
+
+{% load thumbnail %}
+{% block content %}
+  {% include 'posts/includes/switcher.html' %}
+
+  <h1>Посты любимых авторов</h1>
+
+  {% if not page_obj %}
+    У вас еще нет подписок на авторов
+  {% endif %}
+  {% for post in page_obj %}
+    <article>
+      <ul>
+        <li>
+          {% if post.author.get_full_name %}
+            Автор: {{ post.author.get_full_name }}
+          {% else %}
+            Автор: {{ post.author.username }}
+          {% endif %}
+          <a href="{% url 'posts:profile' post.author.username %}">
+            все посты пользователя
+          </a>
+        </li>
+        <li>
+          Дата публикации: {{ post.pub_date|date:"d E Y" }}
+        </li>
+      </ul>
+      {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+        <img class="card-img my-2" src="{{ im.url }}" alt="Картинка поста">
+      {% endthumbnail %}
+      <p>{{ post.text }}</p>
+      <a href="{% url 'posts:post_detail' post.pk %}">
+        подробная информация
+      </a>
+      <br>
+      {% if post.group %}
+        <a href="{% url 'posts:group_list' post.group.slug %}">
+          все записи группы
+        </a>
+      {% endif %}
+    </article>
+    {% if not forloop.last %}<hr>{% endif %}
+  {% endfor %}
+
+  {% include 'posts/includes/paginator.html' %}
+
+{% endblock content %}

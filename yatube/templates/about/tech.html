@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Технологии{% endblock title %}
+
+{% block content %}
+<div class="row">
+  <h1>Вот что я умею</h1>
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python
+      </li>
+      <li class="list-group-item">
+        HTML
+      </li>
+      <li class="list-group-item">
+        Django
+      </li>
+      <li class="list-group-item">
+        Git
+      </li>
+      <li class="list-group-item">
+        Время
+      </li>
+      <li class="list-group-item">
+        Терпение
+      </li>
+    </ul>
+  </aside>
+  <article class="col-12 col-md-9">
+    <div>
+      Помимо перечисленных технологий необходимо хорошее умение работать
+      с моделями и формами Django.
+      <br>
+      Была настроено взаимодействие с пользователями:
+      <ul>
+        <li>
+          Регистрация
+        </li>
+        <li>
+          Авторизация и выход
+        </li>
+        <li>
+          Восстановление и смена пароля
+        </li>
+      </ul>
+      Посмотрим что еще можно будет добавить и доработать...
+      <br>
+      А да, чуть не забыл, были применены стили Bootstrap!
+    </div>
+  </article>
+</div>
+{% endblock %}
