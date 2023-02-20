@@ -12,6 +12,10 @@ class Group(models.Model):
     slug = models.SlugField(unique=True)
     description = models.TextField()
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
     def __str__(self):
         return self.title
 
@@ -62,7 +66,7 @@ class Comment(models.Model):
         Post,
         related_name='comments',
         on_delete=models.CASCADE,
-        verbose_name='Комментарий',
+        verbose_name='Пост',
         help_text='Комментарий к посту',
     )
     author = models.ForeignKey(

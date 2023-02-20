@@ -210,7 +210,7 @@ class PostPagesTests(TestCase):
         response_cache_del = self.client.get(reverse('posts:index'))
         self.assertNotEqual(response_cache_del.content, response.content)
 
-    def test_follow_and_unfollow(self):
+    def test_follow_to_author(self):
         author = User.objects.create_user(username='Author')
         response = self.authorized_client.get(
             reverse('posts:profile_follow',
@@ -225,6 +225,10 @@ class PostPagesTests(TestCase):
             author=author
         ).exists()
         )
+
+    def test_unfollow_from_author(self):
+        author = User.objects.create_user(username='Author')
+        Follow.objects.create(user=self.user, author=author)
         response = self.authorized_client.get(
             reverse('posts:profile_unfollow',
                     kwargs={'username': author.username})

@@ -68,11 +68,14 @@ class PostCreateFormTests(TestCase):
             kwargs={'username': self.user.username}
         ))
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        post = Post.objects.last()
-        self.assertEqual(post.author, self.user)
-        self.assertEqual(post.text, form_data['text'])
-        self.assertEqual(post.group, self.group)
-        self.assertEqual(post.image, 'posts/small.gif')
+        self.assertTrue(
+            Post.objects.filter(
+                author=self.user,
+                text=form_data['text'],
+                group=self.group,
+                image='posts/small.gif'
+            ).exists()
+        )
 
     def test_edit_post(self):
         """Валидная форма редактирует запись в Post."""
