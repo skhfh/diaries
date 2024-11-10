@@ -13,6 +13,9 @@ User = get_user_model()
 
 @cache_page(20, key_prefix='index_page')
 def index(request):
+    """Главная страница с настроенной пагинацией.
+    Настроено кэширование страницы
+    """
     post_list = Post.objects.select_related('group').all()
     page_obj = paginator(request, post_list, NUMBER_OF_POSTS)
     context = {
@@ -24,6 +27,7 @@ def index(request):
 
 
 def group_posts(request, slug):
+    """Страница постов в конкретной группе slug с настроенной пагинацией"""
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
     page_obj = paginator(request, post_list, NUMBER_OF_POSTS)
@@ -35,6 +39,9 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    """Страница автора с его постами, можно подписаться/отписаться
+    (для авторизованных пользователей)
+    """
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     page_obj = paginator(request, post_list, NUMBER_OF_POSTS)
@@ -55,6 +62,9 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    """Страница конкретного поста, с формой для написания комментария
+    (для авторизованных пользователей) и уже написанными комментариями
+    """
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm()
     post_comments = Comment.objects.filter(post=post)
@@ -68,6 +78,9 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    """Страница создания нового поста (для авторизованных пользователей
+    "@login_required")
+    """
     form = PostForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         post = form.save(commit=False)
@@ -79,6 +92,8 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
+    """Страница редактирования поста (для авторизованного автора этого поста)
+    """
     if request.user != get_object_or_404(Post, pk=post_id).author:
         return redirect('posts:post_detail', post_id=post_id)
     is_edit = True
@@ -99,6 +114,9 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
+    """Обработчик для создания комментария. Форма отображается на странице
+    поста
+    """
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
@@ -111,6 +129,7 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
+    """Страница с постами любимых авторов (для авторизованных)"""
     current_user = request.user
     post_list = Post.objects.filter(author__following__user=current_user).all()
     page_obj = paginator(request, post_list, NUMBER_OF_POSTS)
@@ -124,6 +143,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Подписка на автора"""
     author = get_object_or_404(User, username=username)
     user = request.user
     if author != user:
@@ -133,6 +153,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Отписка от автора"""
     author = get_object_or_404(User, username=username)
     user = request.user
     Follow.objects.filter(user=user, author=author).delete()
